@@ -58,22 +58,22 @@
 
                     </el-submenu>
 
-                    <template>
-                        <div class="absolute-bottom">
-                            <el-button type="danger" @click="showLogoutDialog">退出登录</el-button>
-
-                             <el-dialog title="确认退出" :visible.sync="logoutDialogVisible" width="30%" @close="closeLogoutDialog">
-                              <p>确定要退出登录吗？</p>
-                                <span slot="footer" class="dialog-footer">
-                                <el-button @click="logout">确认</el-button>
-                                <el-button @click="cancelLogout">取消</el-button>
-                                </span>
-                            </el-dialog>
-                        </div>
-                    </template>
 
                 </el-menu>
+            <template>
+                <div>
+                    <el-button class="absolute-bottom" type="danger" @click="showLogoutDialog">退出登录</el-button>
+                        <el-dialog title="确认退出" :visible.sync="logoutDialogVisible" width="30%" @close="closeLogoutDialog">
+                            <p>确定要退出登录吗？</p>
+                            <span slot="footer" class="dialog-footer">
+                            <el-button @click="logout">确认</el-button>
+                            <el-button @click="cancelLogout">取消</el-button>
+                            </span>
+                        </el-dialog>
+                </div>
+            </template>
             </div>
+
             <div class="main">
                 <div id="usershop" v-show="active == 1">
                     <usershop></usershop>
@@ -168,6 +168,7 @@ export default {
 }
 
 .liner {
+    position: relative;
     width: 15%;
     height: 100vh;
     background-color: #545c64;
@@ -178,15 +179,12 @@ export default {
 }
 
 .absolute-bottom {
-  position: relative;
-  height: 100vh; /* 使容器占据整个视口高度 */
-}
-
-.absolute-bottom > * {
   position: absolute;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 20px; /* 调整按钮与底部的距离 */
+  margin-bottom: 20px; /* 调整按钮与liner底部的距离 */
 }
+
 
 </style>
