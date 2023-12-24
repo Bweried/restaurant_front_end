@@ -53,18 +53,18 @@
                     </el-submenu>
 
                 </el-menu>
-            <template>
-                <div>
-                    <el-button class="absolute-bottom" type="danger" @click="showLogoutDialog">退出登录</el-button>
+                <template>
+                    <div>
+                        <el-button class="absolute-bottom" type="danger" @click="showLogoutDialog">退出登录</el-button>
                         <el-dialog title="确认退出" :visible.sync="logoutDialogVisible" width="30%" @close="closeLogoutDialog">
                             <p>确定要退出登录吗？</p>
                             <span slot="footer" class="dialog-footer">
-                            <el-button type="danger" @click="logout">确认</el-button>
-                            <el-button @click="cancelLogout">取消</el-button>
+                                <el-button type="danger" @click="logout">确认</el-button>
+                                <el-button @click="cancelLogout">取消</el-button>
                             </span>
                         </el-dialog>
-                </div>
-            </template>
+                    </div>
+                </template>
             </div>
             <div class="main">
                 <div id="manageshop" v-show="active == 1">
@@ -137,9 +137,10 @@ export default {
         },
         closeLogoutDialog() {
             // 对话框关闭时的处理
-        },logout() {
+        }, logout() {
             // 执行退出登录操作，可能包括清除登录状态等
             // 然后跳转至登录页面
+            localStorage.clear();
             this.$router.push('/login'); // 假设登录页面的路由为 '/login'
         },
         cancelLogout() {
@@ -180,11 +181,11 @@ export default {
 }
 
 .absolute-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 20px; /* 调整按钮与liner底部的距离 */
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+    /* 调整按钮与liner底部的距离 */
 }
-
 </style>
