@@ -105,7 +105,7 @@ export default {
             // 设置 Axios 请求的默认配置，包括在请求头中添加 token
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
-            this.$axios.get("/emp/").then((res) => {
+            this.$axios.get("/emp").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;

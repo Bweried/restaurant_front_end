@@ -11,22 +11,12 @@
                 </el-table-column>
                 <el-table-column prop="D_class" label="类别" align="center" style="width: 25%">
                 </el-table-column>
-                <!-- <el-table-column prop="operate" label="操作" align="center" style="width: 25%"> -->
-                    <!-- <template slot-scope="scope">
+                <el-table-column prop="operate" label="操作" align="center" style="width: 25%">
+                    <template slot-scope="scope">
                         <el-button icon="el-icon-plus" size="small" type="success" @click="showdia(scope.row)">订餐
                         </el-button>
-                    </template> -->
-                    <!-- <div>
-                        <el-input v-model="num" placeholder="请输入内容"></el-input>
-                    </div> -->
-                <!-- </el-table-column> -->
-
-                <el-table-column label="描述文字">
-                    <template v-slot:default="scope">
-                        <el-input-number v-model="scope.row.num" @change="handleChange" :min="0" :max="10"></el-input-number>
                     </template>
                 </el-table-column>
-
             </el-table>
 
             <el-dialog title="订餐表单" :visible.sync="dialog" class="dialog" width="40%">
@@ -64,7 +54,7 @@
                     </el-form>
                     <div style="text-align: center;">
                         <el-button type="primary" @click="add">
-                            提交
+                            确认
                         </el-button>
                     </div>
                 </div>
@@ -86,18 +76,22 @@ export default {
     data() {
         return {
             tableData: [],
+            table_Data:[
+                { num: 0 },
+                { num: 0 },
+            ],
             dialog: false,
             form: {
-                name: '',
-                order_money: '',
-                quantity:'0',
-                id:'',
+                // name: '',
+                // order_money: '',
+                quantity:'',
+                dish_id:'',
                 // cons_phone: '',
                 // cons_name: '',
                 // cons_addre: '',
                 // order_way: '',
             },
-            num: 0
+            num: 0,
         }
     },
     methods: {
@@ -111,22 +105,35 @@ export default {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;
-                    this.form.name = res.data.tabledata.name;
-                    this.form.order_money = res.data.tabledata.price;
-                    this.form.id = res.data.tabledata.id;
+                    // this.form.name = res.data.tabledata.name;
+                    // this.form.order_money = res.data.tabledata.price;
+                    this.form.dish_id = res.data.tabledata.id;
                 }
             })
         },
         showdia(row) {
             this.form.name = row.name;
             this.form.order_money = row.price;
-            this.form.id = row.id;
+            this.form.dish_id = row.id;
             this.dialog = true;
         },
         add() {
-            this.$axios.post("/api/user/addorder", this.form).then((res) => {
+            const formattedData = {
+                dish_details: [
+                    {
+                        dish_id: parseInt(this.form.dish_id),
+                        quantity: parseInt(this.form.quantity),
+                    },
+                ],
+            };
+
+            // console.log(this.form)
+
+            // console.log(formattedData);
+
+            this.$axios.post("/order/", formattedData).then((res) => {
                 console.log(res.data);
-                if (res.data.status == 200) {
+                if (res.data.status == 201) {
                     this.$message({
                         message: "成功下单",
                         type: "success"
@@ -136,8 +143,12 @@ export default {
                 }
             })
         },
-        handleChange(value) {
-        console.log(value);
+        // handleChange(value) {
+        // console.log(value);
+        // },
+        handleChange(row) {
+        // 更新 form.quantity
+        this.form.quantity = row.num;
         },
     }
 }

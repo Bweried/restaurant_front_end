@@ -30,18 +30,21 @@
 
             <el-dialog title="添加菜品" :visible.sync="dia_add" width="30%">
                 <el-form ref="add_form" :model="add_form" label-width="100px" :rules="add_form_rules">
-                    <el-form-item label="菜品名称：" prop="shop_name">
-                        <el-input v-model="add_form.shop_name"></el-input>
+                    <el-form-item label="菜品名称：" prop="name">
+                        <el-input v-model="add_form.name"></el-input>
                     </el-form-item>
                     <el-form-item label="菜品单价：" prop="price">
                         <el-input v-model="add_form.price"></el-input>
                     </el-form-item>
-                    <el-form-item label="类别：" prop="m_sale_v">
-                        <el-input v-model="add_form.m_sale_v"></el-input>
+                    <el-form-item label="类别：" prop="class">
+                        <el-select v-model="add_form.class" placeholder="请选择类别">
+                            <el-option v-for="category in categories" :key="category" :label="category"
+                                :value="category"></el-option>
+                        </el-select>
                     </el-form-item>
                 </el-form>
                 <div style="text-align: center;">
-                    <el-button type="primary" @click="addshop()">
+                    <el-button type="primary" @click="adddish()">
                         添加
                     </el-button>
                 </div>
@@ -60,7 +63,7 @@
                     </el-form-item>
                 </el-form>
                 <div style="text-align: center;">
-                    <el-button type="primary" @click="changeshop()">
+                    <el-button type="primary" @click="changedish()">
                         修改
                     </el-button>
                 </div>
@@ -70,7 +73,7 @@
                     确定删除此菜品吗？
                 </div>
                 <div style="text-align: center;">
-                    <el-button type="primary" @click="deleteshop()">
+                    <el-button type="primary" @click="deletedish()">
                         确定
                     </el-button>
                 </div>
@@ -82,7 +85,8 @@
 <script>
 export default {
     created() {
-        this.getdata()
+        this.getdata();
+        this.getCategories();
     },
     data() {
         return {
@@ -91,24 +95,26 @@ export default {
             dia_chg: false,
             dia_dlt: false,
             add_form: {
-                shop_name: '',
+                name: '',
                 price: '',
-                m_sale_v: '',
-                action: "add",
+                class: '',
             },
             chg_form: {
-                shop_name: '',
+                name: '',
                 price: '',
                 m_sale_v: '',
                 action: "change",
             },
             want_delete: '',
             add_form_rules: {
-                shop_name: [{ required: true, message: '必填项', trigger: 'blur' }],
-                price: [{ required: true, message: '必填项', trigger: 'blur' }],
-                m_sale_v: [{ required: true, message: '必填项', trigger: 'blur' }]
-
-            }
+                name: [{ required: true, message: '必填项', trigger: 'blur' }],
+                price: [
+                    { required: true, message: '必填项', trigger: 'blur' },
+                    // { type: 'number', message: '请输入有效的数字', trigger: 'blur' },
+                ],
+                class: [{ required: true, message: '必填项', trigger: 'blur' }]
+            },
+            categories: [], // 新增的类别选项数组
         }
     },
     methods: {
@@ -118,22 +124,47 @@ export default {
             // 设置 Axios 请求的默认配置，包括在请求头中添加 token
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
-            this.$axios.get('/dish/').then((res) => {
+            this.$axios.get('/dish').then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;
                 }
             })
         },
+        getCategories() {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
+            // 从后端获取类别数据的逻辑
+            this.$axios.get('/dish_categories').then((res) => {
+                if (res.data.status === 200) {
+                    this.categories = res.data.categories;
+                    console.log(this.categories);
+                } else {
+                    this.$message.error('获取类别数据失败');
+                }
+            }).catch((error) => {
+                console.error('获取类别数据失败', error);
+            });
+        },
         showdia_add() {
             this.dia_add = true;
         },
-        addshop() {
+        adddish() {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
             this.$refs.add_form.validate(valid => {
                 if (!valid)
                     return;
                 else //验证通过再发送请求
-                    this.$axios.post('/dish/', this.add_form).then((res) => {
+                {
+                    console.log(this.add_form);
+                    this.$axios.post("/dish", this.add_form).then((res) => {
                         console.log(res.data);
                         if (res.data.status == 200) {
                             this.$message({
@@ -144,22 +175,21 @@ export default {
                             this.getdata();
                         } else {
                             this.$message({
-                                message: res.data.msg,
+                                message: res.data.message,
                                 type: "error"
                             })
                         }
                     })
+                }
             })
-
-
         },
         showdia_chg(row) {
-            this.chg_form.shop_name = row.shop_name;
+            this.chg_form.name = row.name;
             this.chg_form.price = row.price;
             this.chg_form.m_sale_v = row.sale;
             this.dia_chg = true;
         },
-        changeshop() {
+        changedish() {
             this.$axios.post("/api/manager/shop", this.chg_form).then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
@@ -173,11 +203,11 @@ export default {
             })
         },
         showdia_dlt(row) {
-            this.want_delete = row.shop_name;
+            this.want_delete = row.id;
             this.dia_dlt = true;
         },
-        deleteshop() {
-            this.$axios.delete('/dish/', { data: { want_delete: this.want_delete } }).then((res) => {
+        deletedish() {
+            this.$axios.delete(`/dish/${this.want_delete}`).then((res) => {
                 if (res.data.status == 200) {
                     this.$message({
                         message: res.data.msg,
