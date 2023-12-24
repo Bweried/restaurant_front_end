@@ -1,22 +1,22 @@
 <template>
     <div>
         <div class="header">
-            顾客管理
+            顾客记录
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 89%" class="table">
-                <el-table-column prop="dispatcher_id" label="顾客编号" style="width: 25%" align="center">
+                <el-table-column prop="id" label="顾客编号" style="width: 25%" align="center">
                 </el-table-column>
-                <el-table-column prop="dispatcher_name" label="姓名" style="width: 25%" align="center">
+                <el-table-column prop="name" label="姓名" style="width: 25%" align="center">
                 </el-table-column>
-                <el-table-column prop="dispatcher_phone" label="联系方式" style="width: 25%" align="center">
+                <el-table-column prop="tel" label="联系方式" style="width: 25%" align="center">
                 </el-table-column>
-                <el-table-column prop="operate" label="操作" style="width: 25%" align="center">
+                <!-- <el-table-column prop="operate" label="操作" style="width: 25%" align="center">
                     <template slot-scope="scope">
                         <el-button size="small" type="danger" @click="showdia_dlt(scope.row)">删除
                         </el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <!-- <el-table-column width="120" align="center">
                     <template slot="header">
                         <el-button icon="el-icon-plus" size="small" type="success" @click="showdia_add()">添加顾客
@@ -45,7 +45,7 @@
             </el-dialog> -->
 
 
-            <el-dialog title="解雇送餐员" :visible.sync="dia_dlt" width="30%">
+            <!-- <el-dialog title="删除顾客" :visible.sync="dia_dlt" width="30%">
                 <div>
                     确定解雇此送餐员吗？
                 </div>
@@ -54,7 +54,7 @@
                         确定
                     </el-button>
                 </div>
-            </el-dialog>
+            </el-dialog> -->
         </div>
     </div>
 </template>
@@ -86,7 +86,12 @@ export default {
     },
     methods: {
         getdata() {
-            this.$axios.get("/api/manager/dispatcher").then((res) => {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
+            this.$axios.get("/users/profile").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;

@@ -5,13 +5,13 @@
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 89%" class="table">
-                <el-table-column prop="shop_name" label="菜品名称" width="200" align="center">
+                <el-table-column prop="name" label="菜品名称" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="price" label="菜品单价" width="200" align="center">
+                <el-table-column prop="price" label="菜品单价" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="sale" label="类别" width="200" align="center">
+                <el-table-column prop="D_class" label="类别" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="operate" label="操作" width="200" align="center">
+                <el-table-column prop="operate" label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button size="small" type="warning" @click="showdia_chg(scope.row)">修改
                         </el-button>
@@ -113,6 +113,11 @@ export default {
     },
     methods: {
         getdata() {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
             this.$axios.get('/dish/').then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {

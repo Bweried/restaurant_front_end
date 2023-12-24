@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="header">
+        <!-- <div class="header">
             &nbsp;&nbsp; 大学外卖平台---后台管理
-        </div>
+        </div> -->
         <div class="body">
             <div class="liner">
                 <el-menu default-active="1" class="el-menu-vertical-demo" background-color="#545c64" text-color="#fff"
@@ -20,7 +20,7 @@
 
                     <el-menu-item index="3">
                         <i class="el-icon-s-check"></i>
-                        <span slot="title">顾客管理</span>
+                        <span slot="title">顾客记录</span>
                     </el-menu-item>
 
 
@@ -53,6 +53,18 @@
                     </el-submenu>
 
                 </el-menu>
+            <template>
+                <div>
+                    <el-button class="absolute-bottom" type="danger" @click="showLogoutDialog">退出登录</el-button>
+                        <el-dialog title="确认退出" :visible.sync="logoutDialogVisible" width="30%" @close="closeLogoutDialog">
+                            <p>确定要退出登录吗？</p>
+                            <span slot="footer" class="dialog-footer">
+                            <el-button type="danger" @click="logout">确认</el-button>
+                            <el-button @click="cancelLogout">取消</el-button>
+                            </span>
+                        </el-dialog>
+                </div>
+            </template>
             </div>
             <div class="main">
                 <div id="manageshop" v-show="active == 1">
@@ -113,12 +125,26 @@ export default {
     data() {
         return {
             active: 1,
+            logoutDialogVisible: false,
         }
     },
     methods: {
         handleselect(index) {
             this.active = index;
-        }
+        },
+        showLogoutDialog() {
+            this.logoutDialogVisible = true;
+        },
+        closeLogoutDialog() {
+            // 对话框关闭时的处理
+        },logout() {
+            // 执行退出登录操作，可能包括清除登录状态等
+            // 然后跳转至登录页面
+            this.$router.push('/login'); // 假设登录页面的路由为 '/login'
+        },
+        cancelLogout() {
+            this.logoutDialogVisible = false;
+        },
     },
 }
 </script>
@@ -143,12 +169,22 @@ export default {
 }
 
 .liner {
+    position: relative;
     width: 15%;
-    height: 100%;
+    height: 100vh;
     background-color: #545c64;
 }
 
 .main {
     width: 85%;
 }
+
+.absolute-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 20px; /* 调整按钮与liner底部的距离 */
+}
+
 </style>

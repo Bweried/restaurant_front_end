@@ -38,9 +38,9 @@
                         </template>
                         <el-menu-item-group>
 
-                            <el-menu-item index="3">已完成订单</el-menu-item>
+                            <el-menu-item index="3">消费记录</el-menu-item>
                             <!-- <el-menu-item index="4">已发货订单</el-menu-item> -->
-                            <el-menu-item index="5">未完成订单</el-menu-item>
+                            <el-menu-item index="5">未付款订单</el-menu-item>
                         </el-menu-item-group>
 
                     </el-submenu>
@@ -66,7 +66,7 @@
                         <el-dialog title="确认退出" :visible.sync="logoutDialogVisible" width="30%" @close="closeLogoutDialog">
                             <p>确定要退出登录吗？</p>
                             <span slot="footer" class="dialog-footer">
-                            <el-button @click="logout">确认</el-button>
+                            <el-button type="danger" @click="logout">确认</el-button>
                             <el-button @click="cancelLogout">取消</el-button>
                             </span>
                         </el-dialog>

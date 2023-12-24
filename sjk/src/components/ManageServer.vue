@@ -5,15 +5,15 @@
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 89%" class="table">
-                <el-table-column prop="service_id" label="员工编号" width="" align="center">
+                <el-table-column prop="emp_id" label="员工编号" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="service_name" label="姓名" width="" align="center">
+                <el-table-column prop="name" label="姓名" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="fastfood_shop_name" label="性别" width="" align="center">
+                <el-table-column prop="gender" label="性别" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="fastfood_shop_name" label="年龄" width="" align="center">
+                <el-table-column prop="age" label="年龄" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="fastfood_shop_name" label="工资" width="" align="center">
+                <el-table-column prop="salary" label="工资" width="" align="center">
                 </el-table-column>
                 <el-table-column prop="operate" label="操作" width="" align="center">
                     <template slot-scope="scope">
@@ -100,7 +100,12 @@ export default {
     },
     methods: {
         getdata() {
-            this.$axios.get("/api/manager/server").then((res) => {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
+            this.$axios.get("/emp/").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;

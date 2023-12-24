@@ -1,15 +1,15 @@
 <template>
     <div>
         <div class="header">
-            已完成订单
+            消费记录
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 100%" class="table" border>
-                <el-table-column prop="shop_name" label="账单编号" width="" align="center">
+                <el-table-column prop="order_id" label="账单编号" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="order_money" label="消费金额" width="" align="center">
+                <el-table-column prop="total_amount" label="消费金额" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="order_way" label="付款时间" width="" align="center">
+                <el-table-column prop="billing_time" label="付款时间" width="" align="center">
                 </el-table-column>
                 <!-- <el-table-column prop="cons_name" label="订餐人姓名" width="100" align="center">
                 </el-table-column>
@@ -22,8 +22,6 @@
                 <el-table-column prop="deliver_time" label="实际送餐时间" width="116" align="center">
                 </el-table-column> -->
             </el-table>
-
-
         </div>
     </div>
 </template>
@@ -36,6 +34,11 @@ export default {
     data() {
         return {
             tableData: [],
+            from:{
+                order_id:'',
+                total_amount:'',
+                billing_time:'',
+            },
         }
     },
     methods: {
@@ -43,7 +46,7 @@ export default {
             this.$axios.get("/api/user/sended").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
-                    this.tableData = res.data.tabledata;
+                    this.tableData = res.data.billing_record;
                 }
             })
         }

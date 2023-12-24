@@ -27,11 +27,48 @@
                 <div>
                     <div class="operate">
                         <span id="op1" @click="change(2)">注册</span>
-                        <span id="op2" @click="change(3)">忘记密码</span>
+                        <span id="op2" @click="change(3)">管理员登录</span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 管理员登录 -->
+        <div class="login_box" v-show="target == 3">
+            <div class="head">
+                哈工程外卖平台
+            </div>
+            <!-- 管理员登录 -->
+            <div>
+                <el-form label-width="0" class="login_form" :model="admin_login_form" :rules="admin_login_rules"
+                    ref="admin_login_form">
+                    <!-- 管理员用户名 -->
+                    <el-form-item prop="adminUsername">
+                        <el-input v-model="admin_login_form.username" spellcheck="false" placeholder="管理员用户名">
+                        </el-input>
+                    </el-form-item>
+                    <!-- 管理员密码 -->
+                    <el-form-item prop="adminPassword">
+                        <el-input v-model="admin_login_form.password" show-password spellcheck="false"
+                            placeholder="管理员密码">
+                        </el-input>
+                    </el-form-item>
+
+                    <!-- 按钮 -->
+                    <el-form-item class="btns">
+                        <el-button type="primary" @click="adminLogin()">登录</el-button>
+                    </el-form-item>
+
+                </el-form>
+                <div>
+                    <div class="operate">
+                        <span id="op1" @click="change(1)">用户登录</span>
+                        <span id="op2" @click="change(2)">注册</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
         <!-- 注册表单 -->
@@ -134,6 +171,10 @@ export default {
                 gender: '',
                 tel: '',
             },
+            admin_login_form: {
+                username: '',
+                password: '',
+            },
             login_rules: {
                 username: [
                     { required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -146,6 +187,14 @@ export default {
                 name: [{ required: true, message: '请输入姓名', trigger: 'blur' },],
                 age: [{ required: true, message: '请设置年龄', trigger: 'blur' }, { validator: checkAge, trigger: 'blur' }],
                 tel: [{ required: true, message: '请绑定手机号', trigger: 'blur' }, { validator: checkMobile, trigger: 'blur' }]
+            },
+            admin_login_rules: {
+                username: [
+                    { required: true, message: '请输入管理员用户名', trigger: 'blur' }
+                ],
+                password: [
+                    { required: true, message: '请输入管理员密码', trigger: 'blur' }
+                ]
             },
         }
     },
@@ -219,6 +268,41 @@ export default {
                 })
             })
         },
+        async adminLogin() {
+            try {
+                const response = await this.$axios.post("/admin/login", this.admin_login_form);
+
+                console.log(response.status);
+                console.log(response.data.message)
+
+                // 检查登录是否成功（假设状态码为 200）
+                if (response.data.status != 200) {
+                    return this.$message({
+                        message: response.data.message,
+                        type: 'error'
+                    });
+                } else {
+                    this.$message({
+                        message: '管理员登录成功',
+                        type: 'success'
+                    });
+
+                    // 保存管理员的访问令牌到本地存储
+                    window.localStorage.setItem("token", response.data.access_token);
+
+                    // 跳转到管理员页面
+                    this.$router.push('/manage');
+                }
+            } catch (error) {
+                console.error(error);
+
+                // 处理错误
+                this.$message({
+                    message: error.response.data.message,
+                    type: 'error'
+                });
+            }
+        }
     }
 }
 </script>

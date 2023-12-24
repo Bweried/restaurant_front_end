@@ -22,17 +22,17 @@
                 <el-table-column prop="disp_id" label="下单时间" style="width: " align="center">
                 </el-table-column>
                 
-                <el-table-column prop="operate" label="确认完成此订单" width="" align="center">
+                <!-- <el-table-column prop="operate" label="确认完成此订单" width="" align="center">
                     <template slot-scope="scope">
                         <el-button size="small" type="success" @click="showdia_makesure(scope.row)">确认
                         </el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
 
             </el-table>
-            <el-dialog title = "确认订单" :visible.sync="dia_makesure" width="30%">
+            <!-- <el-dialog title = "确认订单" :visible.sync="dia_makesure" width="30%">
                 
-            </el-dialog>
+            </el-dialog> -->
 
         </div>
     </div>
