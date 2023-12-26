@@ -5,18 +5,10 @@
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 100%" class="table" border>
-                <!-- <el-table-column prop="shop_name" label="店铺" width="200" align="center">
-                </el-table-column> -->
                 <el-table-column prop="id" label="订单编号" width="" align="center">
                 </el-table-column>
                 <el-table-column prop="order_time" label="下单时间" width="" align="center">
                 </el-table-column>
-                <!-- <el-table-column prop="orderway" label="订餐方式" width="100" align="center">
-                </el-table-column>
-                <el-table-column prop="cons_name" label="订餐人姓名" width="100" align="center">
-                </el-table-column>
-                <el-table-column prop="cons_addre" label="取餐地址" width="200" align="center">
-                </el-table-column> -->
                 <el-table-column prop="operate" label="操作" width="" align="center">
                     <template slot-scope="scope">
                         <el-button size="small" type="success" @click="showdia_ch(scope.row)">修改订单
@@ -32,11 +24,20 @@
             </el-table>
             <el-dialog title="修改订单" :visible.sync="dialog_chnage" width="30%">
                 <el-form ref="form" :model="form_change" label-width="100px">
-                    <el-form-item label="订餐人姓名：">
-                        <el-input v-model="form_change.cons_name"></el-input>
+                    <el-form-item label="菜品名称：">
+                        <span>{{ form_change.name }}</span>
                     </el-form-item>
-                    <el-form-item label="取餐地址：">
-                        <el-input v-model="form_change.cons_addre"></el-input>
+
+                    <el-form-item label="菜品单价：">
+                        <span>{{ form_change.price }}</span>
+                    </el-form-item>
+
+                    <el-form-item label="购买数量：">
+                        <el-input v-model="form_change.quantity"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="总额：">
+                        <span>{{ form_change.total_amount }}</span>
                     </el-form-item>
                 </el-form>
                 <div style="text-align: center;">
@@ -75,18 +76,21 @@ export default {
             dialog_chnage: false,
             dialog_delete: false,
             dialog_confirm: false,
-            form_confirm:{
-                id:'',
-                order_id:'',
-                dish_id:'',
-                quantity:'',
-            },
-            form_change: {
+            form_confirm: {
+                id: '',
                 order_id: '',
-                cons_addre: '',
-                cons_name: '',
+                dish_id: '',
+                quantity: '',
+            },
+
+            form_change: {
+                name: '',
+                price: '',
+                quantity: '',
+                total_amount: '',
             },
             delete_id: '',
+            want_change: ''
         }
     },
     methods: {
@@ -96,7 +100,7 @@ export default {
             // 设置 Axios 请求的默认配置，包括在请求头中添加 token
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
-            this.$axios.get("/porder/").then((res) => {
+            this.$axios.get("/unfinishedorder/").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;
@@ -111,17 +115,40 @@ export default {
             })
         },
         showdia_ch(row) {
-            this.form_change.order_id = row.order_id;
-            this.form_change.cons_name = row.cons_name;
-            this.form_change.cons_addre = row.cons_addre;
+            // 清空表单数据
+            this.form_change.name = '';
+            this.form_change.price = '';
+            this.form_change.quantity = '';
+            this.form_change.total_amount = '';
+            this.want_change = row.id; // 保存要修改的订单 ID
+
+            // 向后端发送请求，获取菜品名称和数量
+            this.$axios.get(`/menuorder/${row.id}`).then((res) => {
+                console.log(res.data);
+                if (res.data.status === 200) {
+                    const orderDetails = res.data.order_details;
+                    if (orderDetails.length > 0) {
+                        // 使用第一个菜品的信息填充表单数据
+                        this.form_change.name = orderDetails[0].name;
+                        this.form_change.price = orderDetails[0].price;
+                        this.form_change.quantity = orderDetails[0].quantity;
+                        this.form_change.total_amount = orderDetails[0].total_amount;
+                    }
+                }
+            });
+
+            // 打开对话框
             this.dialog_chnage = true;
         },
+
         change() {
-            this.$axios.post("/api/user/unsend", this.form_change).then((res) => {
+            this.form_change.quantity = parseInt(this.form_change.quantity);
+
+            this.$axios.put(`/unfinishedorder/${this.want_change}`, this.form_change).then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.$message({
-                        message: res.data.msg,
+                        message: res.data.message,
                         type: "success"
                     })
                     this.getdata()
@@ -130,21 +157,26 @@ export default {
             })
         },
         showdia_dl(row) {
-            this.delete_id = row.order_id;
+            this.delete_id = row.id;
             this.dialog_delete = true;
         },
-        showdia_confirm(){
+        showdia_confirm() {
             this.dialog_confirm = true;
         },
-        confirm(){
-            
+        confirm() {
+
         },
         order_delete() {
-            this.$axios.delete("/api/user/unsend", { data: { delete_id: this.delete_id } }).then((res) => {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
+            this.$axios.delete(`/order/${this.delete_id}`).then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.$message({
-                        message: res.data.msg,
+                        message: res.data.message,
                         type: "success"
                     })
                     this.getdata()

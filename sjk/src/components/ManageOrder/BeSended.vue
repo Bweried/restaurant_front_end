@@ -5,29 +5,13 @@
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 100%" class="table" border>
-                <!-- <el-table-column prop="order_id" label="订单编号" width="80" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column prop="shop_name" label="店铺" width="100" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column prop="order_money" label="订单价格" width="80" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column prop="order_way" label="订餐方式" width="100" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column prop="cons_phone" label="订餐人电话" width="150" align="center">
-                </el-table-column> -->
-                <!-- <el-table-column prop="cons_name" label="订餐人姓名" width="100" align="center">
-                </el-table-column> -->
-                <el-table-column prop="cons_addre" label="账单编号" width="" align="center">
+                <el-table-column prop="id" label="账单编号" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="disp_id" label="消费金额" width="" align="center">
+                <el-table-column prop="total_amount" label="消费金额" width="" align="center">
                 </el-table-column>
-                <el-table-column prop="deliver_time" label="付款时间" width="" align="center">
+                <el-table-column prop="billing_time" label="付款时间" width="" align="center">
                 </el-table-column>
-                <!-- <el-table-column prop="deliver_time" label="实际送餐时间" width="110" align="center">
-                </el-table-column> -->
             </el-table>
-
-
         </div>
     </div>
 </template>
@@ -44,7 +28,7 @@ export default {
     },
     methods: {
         getdata() {
-            this.$axios.get("/api/manager/sended").then((res) => {
+            this.$axios.get("/allfinished").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;

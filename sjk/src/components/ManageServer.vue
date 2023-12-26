@@ -5,7 +5,7 @@
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 89%" class="table">
-                <el-table-column prop="emp_id" label="员工编号" width="" align="center">
+                <el-table-column prop="id" label="员工编号" width="" align="center">
                 </el-table-column>
                 <el-table-column prop="name" label="姓名" width="" align="center">
                 </el-table-column>
@@ -31,23 +31,20 @@
 
             <el-dialog title="添加员工" :visible.sync="dia_add" width="30%">
                 <el-form ref="add_form" :model="add_form" label-width="120px" :rules="add_form_rules">
-                    <el-form-item label="姓名：" prop="service_id">
-                        <el-input v-model="add_form.service_id"></el-input>
+                    <el-form-item label="姓名：" prop="name">
+                        <el-input v-model="add_form.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="年龄：" prop="service_name">
-                        <el-input v-model="add_form.service_name"></el-input>
+                    <el-form-item label="年龄：" prop="age">
+                        <el-input v-model="add_form.age"></el-input>
                     </el-form-item>
-                    <el-form-item label="性别：" prop="fastfood_shop_name">
-                        <!-- <el-input v-model="add_from.fastfood_shop_name"></el-input> -->
-                        <el-select v-model="add_form.fastfood_shop_name" placeholder="请选择性别">
-                            <!-- <el-option v-for="(item, index)  in shop_range" :key="index" :label="item.shop_name"
-                                :value="item.shop_name"></el-option> -->
+                    <el-form-item label="性别：" prop="gender">
+                        <el-select v-model="add_form.gender" placeholder="请选择性别">
                             <el-option label="男" value="男"></el-option>
                             <el-option label="女" value="女"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="工资：" prop="service_name">
-                        <el-input v-model="add_form.service_name"></el-input>
+                    <el-form-item label="工资：" prop="salary">
+                        <el-input v-model="add_form.salary"></el-input>
                     </el-form-item>
                 </el-form>
                 <div style="text-align: center;">
@@ -73,6 +70,8 @@
 </template>
 
 <script>
+
+
 export default {
     created() {
         this.getdata()
@@ -83,19 +82,34 @@ export default {
             dia_add: false,
             dia_dlt: false,
             add_form: {
-                service_id: '',
-                service_name: '',
-                fastfood_shop_name: '',
+                name: '',
+                gender: '',
+                age: '',
+                salary: ''
             },
             want_delete: '',
             add_form_rules: {
-                service_id: [{ required: true, message: '必填项', trigger: 'blur' }],
-                service_name: [{ required: true, message: '必填项', trigger: 'blur' }],
-                fastfood_shop_name: [{ required: true, message: '必填项', trigger: 'blur' }]
-
+                name: [{ required: true, message: '必填项', trigger: 'blur' }],
+                gender: [{ required: true, message: '必填项', trigger: 'blur' }],
+                age: [
+                    { required: true, message: '必填项', trigger: 'blur' },
+                    {
+                        pattern: /^[1-9]\d*$/,
+                        message: '请输入正确的年龄（正整数）',
+                        trigger: 'blur'
+                    }
+                ],
+                salary: [
+                    { required: true, message: '必填项', trigger: 'blur' },
+                    {
+                        pattern: /^(\d+|\d+\.\d+)$/,
+                        message: '请输入正确的工资（数字或带小数点的数字）',
+                        trigger: 'blur'
+                    }
+                ]
             },
-            // 所属店铺的选择范围
-            shop_range: [],
+            // 所属店铺的选择范围   
+            // shop_range: [],
         }
     },
     methods: {
@@ -117,11 +131,20 @@ export default {
             this.dia_add = true;
         },
         addserver() {
+            console.log('Adding employee:', this.add_form);
+
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
             this.$refs.add_form.validate(valid => {
                 if (!valid)
                     return;
                 else //验证通过再发送请求
-                    this.$axios.post("/api/manager/server", this.add_form).then((res) => {
+                {
+                    console.log('Sending request...');
+                    this.$axios.post("/emp", this.add_form).then((res) => {
                         console.log(res.data);
                         if (res.data.status == 200) {
                             this.$message({
@@ -132,30 +155,42 @@ export default {
                             this.getdata();
                         } else {
                             this.$message({
-                                message: res.data.msg,
+                                message: res.data.message,
                                 type: "error"
                             })
                         }
                     })
+                }
             })
-
-
         },
         showdia_dlt(row) {
-            this.want_delete = row.service_id;
+            this.want_delete = row.id;
             this.dia_dlt = true;
         },
         deleteserver() {
-            this.$axios.delete("/api/manager/server", { data: { want_delete: this.want_delete } }).then((res) => {
-                if (res.data.status == 200) {
-                    this.$message({
-                        message: res.data.msg,
-                        type: "success"
-                    })
-                    this.getdata()
-                    this.dia_dlt = false;
+            const token = localStorage.getItem('token');
+
+            this.$axios.delete(`/emp/${this.want_delete}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-            })
+            }).then((res) => {
+                if (res.data.status === 200) {
+                    this.$message({
+                        message: res.data.message,
+                        type: "success"
+                    });
+                    this.getdata();
+                    this.dia_dlt = false;
+                } else {
+                    this.$message({
+                        message: res.data.message,
+                        type: "error"
+                    });
+                }
+            }).catch((error) => {
+                console.error('删除失败', error);
+            });
         }
     }
 }

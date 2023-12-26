@@ -24,32 +24,15 @@
                     <el-form ref="form" :model="form" label-width="100px">
                         <el-form-item label="菜品名称：">
                             <span>{{ form.name }}</span>
-                            <!-- <el-input v-model="form.shop_name"></el-input> -->
                         </el-form-item>
 
                         <el-form-item label="菜品单价：">
                             <span>{{ form.order_money }}</span>
-                            <!-- <el-input v-model="form.order_money"></el-input> -->
                         </el-form-item>
-
-                        <!-- <el-form-item label="订餐方式：">
-                            <el-select v-model="form.order_way" placeholder="请选择订餐方式">
-                                <el-option label="人工订餐" value="人工订餐"></el-option>
-                                <el-option label="网上订餐" value="网上订餐"></el-option>
-                            </el-select>
-                        </el-form-item> -->
-
-                        <!-- <el-form-item label="客户电话：">
-                            <el-input v-model="form.cons_phone"></el-input>
-                        </el-form-item> -->
 
                         <el-form-item label="购买数量：">
                             <el-input v-model="form.quantity"></el-input>
                         </el-form-item>
-
-                        <!-- <el-form-item label="送餐地址：">
-                            <el-input v-model="form.cons_addre"></el-input>
-                        </el-form-item> -->
 
                     </el-form>
                     <div style="text-align: center;">
@@ -59,7 +42,7 @@
                     </div>
                 </div>
             </el-dialog>
-            
+
             <!-- <template>
                 <el-input-number v-model="num" @change="handleChange" :min="0" :max="1000" :disabled="false"></el-input-number>
             </template>  -->
@@ -69,6 +52,8 @@
 </template>
 
 <script>
+import UserUnsend from './UserOrder/UserUnsend.vue';
+
 export default {
     created() {
         this.getdata();
@@ -76,20 +61,14 @@ export default {
     data() {
         return {
             tableData: [],
-            table_Data:[
+            table_Data: [
                 { num: 0 },
                 { num: 0 },
             ],
             dialog: false,
             form: {
-                // name: '',
-                // order_money: '',
-                quantity:'',
-                dish_id:'',
-                // cons_phone: '',
-                // cons_name: '',
-                // cons_addre: '',
-                // order_way: '',
+                quantity: '',
+                dish_id: '',
             },
             num: 0,
         }
@@ -126,20 +105,16 @@ export default {
                     },
                 ],
             };
-
-            // console.log(this.form)
-
-            // console.log(formattedData);
-
             this.$axios.post("/order/", formattedData).then((res) => {
                 console.log(res.data);
-                if (res.data.status == 201) {
+                if (res.data.status == 200) {
                     this.$message({
                         message: "成功下单",
                         type: "success"
                     })
                     this.dialog = false;
                     this.getdata();
+                    UserUnsend.methods.getdata();
                 }
             })
         },
@@ -147,8 +122,8 @@ export default {
         // console.log(value);
         // },
         handleChange(row) {
-        // 更新 form.quantity
-        this.form.quantity = row.num;
+            // 更新 form.quantity
+            this.form.quantity = row.num;
         },
     }
 }

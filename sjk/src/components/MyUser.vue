@@ -136,6 +136,7 @@ export default {
         logout() {
             // 执行退出登录操作，可能包括清除登录状态等
             // 然后跳转至登录页面
+            localStorage.clear();
             this.$router.push('/login'); // 假设登录页面的路由为 '/login'
         },
         cancelLogout() {

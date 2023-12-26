@@ -53,13 +53,19 @@
             <el-dialog title="修改菜品" :visible.sync="dia_chg" width="30%">
                 <el-form ref="form" :model="chg_form" label-width="100px">
                     <el-form-item label="菜品名称：">
-                        <span>{{ chg_form.shop_name }}</span>
+                        <span>{{ chg_form.name }}</span>
                     </el-form-item>
                     <el-form-item label="菜品单价：">
                         <el-input v-model="chg_form.price"></el-input>
                     </el-form-item>
-                    <el-form-item label="类别：">
-                        <el-input v-model="chg_form.m_sale_v"></el-input>
+                    <!-- <el-form-item label="类别：">
+                        <el-input v-model="chg_form.class"></el-input>
+                    </el-form-item> -->
+                    <el-form-item label="类别：" prop="class">
+                        <el-select v-model="chg_form.class" placeholder="请选择类别">
+                            <el-option v-for="category in categories" :key="category" :label="category"
+                                :value="category"></el-option>
+                        </el-select>
                     </el-form-item>
                 </el-form>
                 <div style="text-align: center;">
@@ -102,10 +108,10 @@ export default {
             chg_form: {
                 name: '',
                 price: '',
-                m_sale_v: '',
-                action: "change",
+                class: '',
             },
             want_delete: '',
+            want_change: '',
             add_form_rules: {
                 name: [{ required: true, message: '必填项', trigger: 'blur' }],
                 price: [
@@ -124,7 +130,7 @@ export default {
             // 设置 Axios 请求的默认配置，包括在请求头中添加 token
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
-            this.$axios.get('/dish').then((res) => {
+            this.$axios.get('/dish/').then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;
@@ -164,7 +170,7 @@ export default {
                 else //验证通过再发送请求
                 {
                     console.log(this.add_form);
-                    this.$axios.post("/dish", this.add_form).then((res) => {
+                    this.$axios.post("/dish/", this.add_form).then((res) => {
                         console.log(res.data);
                         if (res.data.status == 200) {
                             this.$message({
@@ -184,13 +190,19 @@ export default {
             })
         },
         showdia_chg(row) {
+            this.want_change = row.id;
             this.chg_form.name = row.name;
             this.chg_form.price = row.price;
-            this.chg_form.m_sale_v = row.sale;
+            this.chg_form.class = row.class;
             this.dia_chg = true;
         },
         changedish() {
-            this.$axios.post("/api/manager/shop", this.chg_form).then((res) => {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
+            this.$axios.put(`/dish/${this.want_change}`, this.chg_form).then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.$message({
@@ -200,23 +212,38 @@ export default {
                     this.dia_chg = false;
                     this.getdata();
                 }
-            })
+            }).catch((error) => {
+                console.error('修改菜品失败', error);
+            });
         },
         showdia_dlt(row) {
             this.want_delete = row.id;
             this.dia_dlt = true;
         },
         deletedish() {
-            this.$axios.delete(`/dish/${this.want_delete}`).then((res) => {
-                if (res.data.status == 200) {
-                    this.$message({
-                        message: res.data.msg,
-                        type: "success"
-                    })
-                    this.getdata()
-                    this.dia_dlt = false;
+            const token = localStorage.getItem('token');
+
+            this.$axios.delete(`/dish/${this.want_delete}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
-            })
+            }).then((res) => {
+                if (res.data.status === 200) {
+                    this.$message({
+                        message: res.data.message,
+                        type: "success"
+                    });
+                    this.getdata();
+                    this.dia_dlt = false;
+                } else {
+                    this.$message({
+                        message: res.data.message,
+                        type: "error"
+                    });
+                }
+            }).catch((error) => {
+                console.error('删除菜品失败', error);
+            });
         }
     }
 }
