@@ -58,7 +58,31 @@
                 </div>
             </el-dialog>
 
-            <el-dialog title="确认订单" :visible.sync="dialog_confirm" width="30%">
+            <el-dialog title="确认付款" :visible.sync="dialog_confirm" width="30%">
+                <el-form ref="form" :model="form_change" label-width="100px">
+                    <el-form-item label="菜品名称：">
+                        <span>{{ form_change.name }}</span>
+                    </el-form-item>
+
+                    <el-form-item label="菜品单价：">
+                        <span>{{ form_change.price }}</span>
+                    </el-form-item>
+
+                    <el-form-item label="购买数量：">
+                        <span>{{ form_change.quantity }}</span>
+                    </el-form-item>
+
+                    <el-form-item label="总额：">
+                        <span>{{ form_change.total_amount }}</span>
+                    </el-form-item>
+                </el-form>
+
+
+                <div style="text-align: center;">
+                    <el-button type="primary" @click="confirm">
+                        确定
+                    </el-button>
+                </div>
 
             </el-dialog>
         </div>
@@ -90,7 +114,8 @@ export default {
                 total_amount: '',
             },
             delete_id: '',
-            want_change: ''
+            want_change: '',
+            confirm_id: '',
         }
     },
     methods: {
@@ -160,11 +185,49 @@ export default {
             this.delete_id = row.id;
             this.dialog_delete = true;
         },
-        showdia_confirm() {
+        showdia_confirm(row) {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+
+            // 向后端发送请求，获取菜品名称和数量
+            this.$axios.get(`/menuorder/${row.id}`).then((res) => {
+                console.log(res.data);
+                if (res.data.status === 200) {
+                    const orderDetails = res.data.order_details;
+                    if (orderDetails.length > 0) {
+                        // 使用第一个菜品的信息填充表单数据
+                        this.form_change.name = orderDetails[0].name;
+                        this.form_change.price = orderDetails[0].price;
+                        this.form_change.quantity = orderDetails[0].quantity;
+                        this.form_change.total_amount = orderDetails[0].total_amount;
+                    }
+                }
+            });
+
+            this.confirm_id = row.id;
             this.dialog_confirm = true;
         },
         confirm() {
+            // 假设你有一个保存 token 的变量
+            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
+            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
+            // this.confirm_id = parseInt(this.tableData.id);
+
+            this.$axios.post(`/orderConfirm/${this.confirm_id}`).then((res) => {
+                console.log(res.data);
+                if (res.data.status == 200) {
+                    this.$message({
+                        message: res.data.message,
+                        type: "success"
+                    })
+                    this.getdata()
+                    this.dialog_confirm = false;
+                }
+            })
         },
         order_delete() {
             // 假设你有一个保存 token 的变量
