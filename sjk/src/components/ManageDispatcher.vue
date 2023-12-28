@@ -11,50 +11,7 @@
                 </el-table-column>
                 <el-table-column prop="tel" label="联系方式" style="width: 25%" align="center">
                 </el-table-column>
-                <!-- <el-table-column prop="operate" label="操作" style="width: 25%" align="center">
-                    <template slot-scope="scope">
-                        <el-button size="small" type="danger" @click="showdia_dlt(scope.row)">删除
-                        </el-button>
-                    </template>
-                </el-table-column> -->
-                <!-- <el-table-column width="120" align="center">
-                    <template slot="header">
-                        <el-button icon="el-icon-plus" size="small" type="success" @click="showdia_add()">添加顾客
-                        </el-button>
-                    </template>
-                </el-table-column> -->
             </el-table>
-
-            <!-- <el-dialog title="添加送餐员" :visible.sync="dia_add" width="30%">
-                <el-form ref="add_form" :model="add_form" label-width="120px" :rules="add_form_rules">
-                    <el-form-item label="送餐员编号：" prop="dispatcher_id">
-                        <el-input v-model="add_form.dispatcher_id"></el-input>
-                    </el-form-item>
-                    <el-form-item label="送餐员姓名：" prop="dispatcher_name">
-                        <el-input v-model="add_form.dispatcher_name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="送餐员电话：" prop="dispatcher_phone">
-                        <el-input v-model="add_form.dispatcher_phone"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div style="text-align: center;">
-                    <el-button type="primary" @click="adddispatcher()">
-                        添加
-                    </el-button>
-                </div>
-            </el-dialog> -->
-
-
-            <!-- <el-dialog title="删除顾客" :visible.sync="dia_dlt" width="30%">
-                <div>
-                    确定解雇此送餐员吗？
-                </div>
-                <div style="text-align: center;">
-                    <el-button type="primary" @click="deletedispatcher()">
-                        确定
-                    </el-button>
-                </div>
-            </el-dialog> -->
         </div>
     </div>
 </template>
@@ -86,9 +43,9 @@ export default {
     },
     methods: {
         getdata() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             this.$axios.get("/users/profile").then((res) => {

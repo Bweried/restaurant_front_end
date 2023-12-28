@@ -58,9 +58,6 @@
                     <el-form-item label="菜品单价：">
                         <el-input v-model="chg_form.price"></el-input>
                     </el-form-item>
-                    <!-- <el-form-item label="类别：">
-                        <el-input v-model="chg_form.class"></el-input>
-                    </el-form-item> -->
                     <el-form-item label="类别：" prop="class">
                         <el-select v-model="chg_form.class" placeholder="请选择类别">
                             <el-option v-for="category in categories" :key="category" :label="category"
@@ -116,7 +113,6 @@ export default {
                 name: [{ required: true, message: '必填项', trigger: 'blur' }],
                 price: [
                     { required: true, message: '必填项', trigger: 'blur' },
-                    // { type: 'number', message: '请输入有效的数字', trigger: 'blur' },
                 ],
                 class: [{ required: true, message: '必填项', trigger: 'blur' }]
             },
@@ -125,9 +121,8 @@ export default {
     },
     methods: {
         getdata() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+             
+            const userToken = localStorage.getItem('token'); 
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             this.$axios.get('/dish/').then((res) => {
@@ -138,9 +133,9 @@ export default {
             })
         },
         getCategories() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+             
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             // 从后端获取类别数据的逻辑
@@ -159,9 +154,8 @@ export default {
             this.dia_add = true;
         },
         adddish() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+             
+            const userToken = localStorage.getItem('token'); 
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             this.$refs.add_form.validate(valid => {
@@ -197,9 +191,9 @@ export default {
             this.dia_chg = true;
         },
         changedish() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+             
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             this.$axios.put(`/dish/${this.want_change}`, this.chg_form).then((res) => {

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="login_box">
             <div class="head">
-                哈工程外卖平台
+                用户登录
             </div>
             <!-- 登录 -->
             <div v-show="target == 1">
@@ -36,7 +36,7 @@
         <!-- 管理员登录 -->
         <div class="login_box" v-show="target == 3">
             <div class="head">
-                哈工程外卖平台
+                管理员登录
             </div>
             <!-- 管理员登录 -->
             <div>
@@ -74,7 +74,7 @@
         <!-- 注册表单 -->
         <div class="reg_box" v-show="target == 2">
             <div class="head">
-                哈工程外卖平台
+                用户注册
             </div>
             <div>
                 <el-form class="reg_form" :model="reg_form" :rules="reg_rules" ref="reg_form">
@@ -87,7 +87,7 @@
                     <!-- 密码 -->
                     <el-form-item prop="password">
                         <el-input prefix-icon="iconfont icon-password" v-model="reg_form.password" show-password
-                            spellcheck="false" placeholder="密码(包含大小写字母、数字，长度在6-12之间)"></el-input>
+                            spellcheck="false" placeholder="密码(密码长度应在6到225位之间)"></el-input>
                     </el-form-item>
 
                     <el-form-item prop="name">

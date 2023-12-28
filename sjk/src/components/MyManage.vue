@@ -27,8 +27,8 @@
                         </template>
                         <el-menu-item-group>
 
-                            <el-menu-item index="6">已完成订单</el-menu-item>
-                            <el-menu-item index="7">未完成订单</el-menu-item>
+                            <el-menu-item index="6">顾客消费记录</el-menu-item>
+                            <el-menu-item index="7">未付款订单</el-menu-item>
                         </el-menu-item-group>
 
                     </el-submenu>

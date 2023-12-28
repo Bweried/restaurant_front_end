@@ -120,18 +120,18 @@ export default {
     },
     methods: {
         getdata() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
-
-            this.$axios.get("/unfinishedorder/").then((res) => {
-                console.log(res.data);
-                if (res.data.status == 200) {
-                    this.tableData = res.data.tabledata;
-                }
-            })
-
+            setInterval(() => {
+                this.$axios.get("/unfinishedorder/").then((res) => {
+                    console.log(res.data);
+                    if (res.data.status == 200) {
+                        this.tableData = res.data.tabledata;
+                    }
+                })
+            },1500)
             this.$axios.get("/menuorder/").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
@@ -186,9 +186,9 @@ export default {
             this.dialog_delete = true;
         },
         showdia_confirm(row) {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             // 向后端发送请求，获取菜品名称和数量
@@ -210,12 +210,10 @@ export default {
             this.dialog_confirm = true;
         },
         confirm() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
-
-            // this.confirm_id = parseInt(this.tableData.id);
 
             this.$axios.post(`/orderConfirm/${this.confirm_id}`).then((res) => {
                 console.log(res.data);
@@ -226,16 +224,13 @@ export default {
                     })
                     this.getdata()
                     this.dialog_confirm = false;
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
                 }
             })
         },
         order_delete() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             this.$axios.delete(`/order/${this.delete_id}`).then((res) => {

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="header">
-            未完成订单
+            未付款订单
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 100%" class="table" border>
@@ -27,12 +27,14 @@ export default {
     },
     methods: {
         getdata() {
-            this.$axios.get("/allunfinished").then((res) => {
-                console.log(res.data);
-                if (res.data.status == 200) {
-                    this.tableData = res.data.tabledata;
-                }
-            })
+            setInterval(() => {
+                this.$axios.get("/allunfinished").then((res) => {
+                    console.log(res.data);
+                    if (res.data.status == 200) {
+                        this.tableData = res.data.tabledata;
+                    }
+                })
+            },3000)
         },
         showdia_makesure() {
             this.dia_makesure = true;

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="header">
-            个人信息
+            修改密码
         </div>
         <div class="body">
             <el-form ref="form" :model="form" label-width="23%" id="selectForm" :rules="form_rules">

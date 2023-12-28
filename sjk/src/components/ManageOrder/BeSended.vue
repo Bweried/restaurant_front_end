@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="header">
-            已完成订单
+            顾客消费记录
         </div>
         <div class="body">
             <el-table :data="tableData" style="width: 100%" class="table" border>
@@ -28,12 +28,14 @@ export default {
     },
     methods: {
         getdata() {
-            this.$axios.get("/allfinished").then((res) => {
-                console.log(res.data);
-                if (res.data.status == 200) {
-                    this.tableData = res.data.tabledata;
-                }
-            })
+            setInterval(() => {
+                this.$axios.get("/allfinished").then((res) => {
+                    console.log(res.data);
+                    if (res.data.status == 200) {
+                        this.tableData = res.data.tabledata;
+                    }
+                })
+            },3000)
         }
     }
 

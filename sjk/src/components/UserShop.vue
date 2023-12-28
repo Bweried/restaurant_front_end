@@ -71,13 +71,17 @@ export default {
             const userToken = localStorage.getItem('token');
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
-            this.$axios.get("/dish/").then((res) => {
-                console.log(res.data);
-                if (res.data.status == 200) {
-                    this.tableData = res.data.tabledata;
-                    this.form.dish_id = res.data.tabledata.id;
-                }
-            })
+            setInterval(() => {
+                this.$axios.get("/dish/").then((res) => {
+                    console.log(res.data);
+                    if (res.data.status == 200) {
+                        this.tableData = res.data.tabledata;
+                    }
+                })
+            },750)
+
+            this.form.dish_id = this.tabledata.id;
+
         },
         showdia(row) {
             this.form.name = row.name;
@@ -103,9 +107,6 @@ export default {
                     })
                     this.dialog = false;
                     this.getdata();
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
                 }
             })
         },

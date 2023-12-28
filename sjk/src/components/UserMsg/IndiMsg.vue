@@ -35,7 +35,6 @@ export default {
                 sex: '',
                 age: '',
                 id:'',
-                // mail: '',
                 phone: '',
                 user_name: '',
             }
@@ -43,9 +42,9 @@ export default {
     },
     methods: {
         getdata() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            
+            const userToken = localStorage.getItem('token'); 
+            
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             this.$axios.get("/user/profile").then((res) => {

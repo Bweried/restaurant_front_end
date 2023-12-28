@@ -33,12 +33,14 @@ export default {
     },
     methods: {
         getdata() {
-            this.$axios.get("/finishedorder").then((res) => {
-                console.log(res.data);
-                if (res.data.status == 200) {
-                    this.tableData = res.data.tabledata;
-                }
-            })
+            setInterval(() => {
+                this.$axios.get("/finishedorder").then((res) => {
+                    console.log(res.data);
+                    if (res.data.status == 200) {
+                        this.tableData = res.data.tabledata;
+                    }
+                })
+            },1500) //每1.5秒发送一次请求
         }
     }
 }
