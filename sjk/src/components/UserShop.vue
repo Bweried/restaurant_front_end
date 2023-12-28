@@ -42,18 +42,11 @@
                     </div>
                 </div>
             </el-dialog>
-
-            <!-- <template>
-                <el-input-number v-model="num" @change="handleChange" :min="0" :max="1000" :disabled="false"></el-input-number>
-            </template>  -->
-
         </div>
     </div>
 </template>
 
 <script>
-import UserUnsend from './UserOrder/UserUnsend.vue';
-
 export default {
     created() {
         this.getdata();
@@ -75,17 +68,13 @@ export default {
     },
     methods: {
         getdata() {
-            // 假设你有一个保存 token 的变量
-            const userToken = localStorage.getItem('token'); // 请确保这个 token 是在登录时存储的
-            // 设置 Axios 请求的默认配置，包括在请求头中添加 token
+            const userToken = localStorage.getItem('token');
             this.$axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
 
             this.$axios.get("/dish/").then((res) => {
                 console.log(res.data);
                 if (res.data.status == 200) {
                     this.tableData = res.data.tabledata;
-                    // this.form.name = res.data.tabledata.name;
-                    // this.form.order_money = res.data.tabledata.price;
                     this.form.dish_id = res.data.tabledata.id;
                 }
             })
@@ -114,15 +103,13 @@ export default {
                     })
                     this.dialog = false;
                     this.getdata();
-                    UserUnsend.methods.getdata();
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 }
             })
         },
-        // handleChange(value) {
-        // console.log(value);
-        // },
         handleChange(row) {
-            // 更新 form.quantity
             this.form.quantity = row.num;
         },
     }

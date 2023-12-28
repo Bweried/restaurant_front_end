@@ -5,46 +5,19 @@
         </div>
         <div class="body">
             <el-form ref="form" :model="form" label-width="20%" id="selectForm">
-                <!-- <el-form-item label="用户名：" prop="dispatcher_id">   
-                    <span>{{ form.user_name }}</span>
-                    <el-input v-model="form.user_name"></el-input>
-                </el-form-item> -->
                 <el-form-item label="姓名：" prop="real_name">
                     <span>{{ form.real_name }}</span>
-                    <!-- <el-input v-model="form.real_name"></el-input> -->
                 </el-form-item>
                 <el-form-item label="年龄：" prop="age">
                     <span>{{ form.age }}</span>
-                    <!-- <el-input v-model="form.age"></el-input> -->
                 </el-form-item>
                 <el-form-item label="性别：" prop="sex">
                     <span>{{ form.sex }}</span>
-                    <!-- <el-input v-model="form.sex"></el-input> -->
                 </el-form-item>
                 <el-form-item label="联系方式：" prop="phone">
                     <span>{{ form.phone }}</span>
-                    <!-- <el-input v-model="form.phone"></el-input> -->
                 </el-form-item>
-                <!-- <el-form-item label="邮箱：" prop="dispatcher_phone">
-                    <span>{{ form.mail }}</span>
-                    <el-input v-model="form.mail"></el-input>
-                </el-form-item> -->
             </el-form>
-
-            <!-- <el-table :data="tableData" style="width: 89%" class="vertical-table">
-                <el-table-column prop="id" label="顾客编号" style="width: " align="center">
-                </el-table-column>
-                <el-table-column prop="id" label="顾客编号" style="width: " align="center">
-                </el-table-column>
-                <el-table-column prop="id" label="顾客编号" style="width: " align="center">
-                </el-table-column>
-                <el-table-column prop="id" label="顾客编号" style="width: " align="center">
-                </el-table-column>
-
-            </el-table> -->
-
-
-
         </div>
     </div>
 </template>
@@ -78,15 +51,12 @@ export default {
             this.$axios.get("/user/profile").then((res) => {
                 console.log(res.data);
                 if (res.status == 200) {
-                    // this.tableData = res.data.tabledata;
                     this.form.age = res.data.age;
-                    // this.form.mail = res.data.mail;
                     this.form.phone = res.data.tel;
                     this.form.real_name = res.data.name;
                     this.form.sex = res.data.gender;
                     this.form.id = res.data.id;
                     this.form.user_name = res.data.username;
-                    // this.form.user_name = res.data.user_name;
                 }
             })
         }

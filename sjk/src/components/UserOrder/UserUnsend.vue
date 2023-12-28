@@ -226,6 +226,9 @@ export default {
                     })
                     this.getdata()
                     this.dialog_confirm = false;
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 }
             })
         },

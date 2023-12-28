@@ -5,12 +5,12 @@
         </div>
         <div class="body">
             <el-form ref="form" :model="form" label-width="23%" id="selectForm" :rules="form_rules">
-                <el-form-item label="原密码：" prop="old_pwd">
-                    <el-input v-model="form.old_pwd" type="password" show-password></el-input>
+                <el-form-item label="原密码：" prop="current_password">
+                    <el-input v-model="form.current_password" type="password" show-password></el-input>
                 </el-form-item>
 
-                <el-form-item label="新密码：" prop="new_pwd">
-                    <el-input v-model="form.new_pwd" type="password" show-password></el-input>
+                <el-form-item label="新密码：" prop="new_password">
+                    <el-input v-model="form.new_password" type="password" show-password></el-input>
                 </el-form-item>
 
                 <el-form-item label="确认密码：" prop="check_pwd">
@@ -30,15 +30,23 @@ export default {
         this.getdata()
     },
     data() {
+        var checkPassword = (rule, value, cb) => {
+            const regPassword = /^.{6,225}$/;
+            if (regPassword.test(value)) {
+                return cb();
+            }
+            cb(new Error('密码长度应在6到225位之间'));
+        };
+
         return {
             form: {
-                old_pwd: '',
-                new_pwd: '',
+                current_password: '',
+                new_password: '',
                 check_pwd: '',
             },
             form_rules: {
-                old_pwd: [{ required: true, message: "必填", trigger: 'blur' }],
-                new_pwd: [{ required: true, message: "必填", trigger: 'blur' }],
+                current_password: [{ required: true, message: "必填", trigger: 'blur' }],
+                new_password: [{ required: true, message: "必填", trigger: 'blur' }, { validator: checkPassword, trigger: 'blur' }],
                 check_pwd: [{ required: true, message: "必填", trigger: 'blur' }]
             }
         }
@@ -49,16 +57,19 @@ export default {
                 if (!valid)
                     return;
                 else //验证通过再发送请求
-                    if (this.form.check_pwd == this.form.new_pwd) {
-                        this.$axios.post("/api/user/pwd_chg", this.form).then((res) => {
+                    if (this.form.check_pwd == this.form.new_password) {
+                        this.$axios.post("/user/pwd_chg", this.form).then((res) => {
                             if (res.data.status == 200) {
                                 this.$message({
-                                    message: res.data.msg,
+                                    message: res.data.message,
                                     type: "success"
-                                })
+                                });
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1500);
                             } else {
                                 this.$message({
-                                    message: res.data.msg,
+                                    message: res.data.message,
                                     type: "error"
                                 })
                             }
